@@ -1,7 +1,7 @@
 # RealFakeGarageDoors
 [![Build Status](https://travis-ci.org/plasticrake/RealFakeGarageDoors.svg?branch=master)](https://travis-ci.org/plasticrake/RealFakeGarageDoors)
 
-Garage Door Opener for ESP8266.
+Garage Door Opener for ESP8266 / Arduino.
 
 This is the hardware portion of my Real Fake Garage Doors project.
 The client is the [homebridge-real-fake-garage-doors](https://github.com/plasticrake/homebridge-real-fake-garage-doors) plugin for [Homebridge](https://github.com/nfarina/homebridge).
