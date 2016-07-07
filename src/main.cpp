@@ -34,27 +34,54 @@ enum GarageDoorIndex {
 };
 
 //==============================================================================
+// Definitions
+//==============================================================================
+#ifdef min
+#undef min
+#endif
+#define min(a, b) \
+  ({ __typeof__ (a) _a = (a); \
+      __typeof__ (b) _b = (b); \
+    _a < _b ? _a : _b; })
+
+#ifdef max
+#undef max
+#endif
+#define max(a, b) \
+  ({ __typeof__ (a) _a = (a); \
+      __typeof__ (b) _b = (b); \
+    _a > _b ? _a : _b; })
+
+//==============================================================================
+// Forward Declarations
+//==============================================================================
+int parseMessage(uint8_t* msg, unsigned long epochTime, Command& cmd);
+uint8_t* generateHash(unsigned long epochTime);
+int executeCommand(Command command);
+int openGarageDoor(GarageDoorIndex doorIndex);
+void printHash(uint8_t* hash);
+//______________________________________________________________________________
 
 struct OpenLog {
   static const uint32_t LOG_SIZE = MAX_OPEN_COUNT_PER_DAY + 1;
 
   uint32_t log[LOG_SIZE];
-  size_t logLength;
+  size_t logIndex;
   size_t openCount;  // all time total
 
   bool throttleRateExceeded;
 
-  OpenLog() : logLength(0), openCount(0), throttleRateExceeded(false) {
+  OpenLog() : logIndex(0), openCount(0), throttleRateExceeded(false) {
     memset(log, 0, LOG_SIZE);
   }
 
   void open() {
-    if (logLength >= LOG_SIZE) {
-      logLength = 0;  // rollover
+    if (logIndex >= LOG_SIZE) {
+      logIndex = 0;  // rollover
     }
-    log[logLength] = millis();
+    log[logIndex] = millis();
+    logIndex++;
     openCount++;
-    logLength++;
   }
 
   uint32_t openCountSince(uint32_t since) {
@@ -68,21 +95,15 @@ struct OpenLog {
   }
 
   uint32_t openCountLastMinute() {
-    uint32_t since = millis();
-    if (since < MINUTE) { since = MINUTE; }
-    return openCountSince(since - MINUTE);
+    return openCountSince(max(millis(), MINUTE) - MINUTE);
   }
 
   uint32_t openCountLastHour() {
-    uint32_t since = millis();
-    if (since < HOUR) { since = HOUR; }
-    return openCountSince(since - HOUR);
+    return openCountSince(max(millis(), HOUR) - HOUR);
   }
 
   uint32_t openCountLastDay() {
-    uint32_t since = millis();
-    if (since < DAY) { since = DAY; }
-    return openCountSince(since - DAY);
+    return openCountSince(max(millis(), DAY) - DAY);
   }
 
   bool checkThrottleRateExceeded() {
@@ -102,81 +123,6 @@ MDNSResponder mdns;
 WiFiServer server = WiFiServer(PORT);
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
-
-void printHash(uint8_t* hash) {
-  int i;
-  for (i = 0; i < 32; i++) {
-    Serial.print("0123456789abcdef"[hash[i] >> 4]);
-    Serial.print("0123456789abcdef"[hash[i] & 0xf]);
-  }
-  Serial.println();
-}
-
-int openGarageDoor(GarageDoorIndex doorIndex) {
-  openLog.open();
-  if (openLog.checkThrottleRateExceeded()) {
-    return THROTTLE_RATE_EXCEEDED;
-  }
-
-  Serial.printf("Opening Garage Door: %i...", doorIndex);
-
-  uint8_t pin;
-  switch (doorIndex) {
-    case FRONT:
-      pin = FRONT_DOOR_PIN;
-      break;
-    case REAR:
-      pin = REAR_DOOR_PIN;
-      break;
-  }
-
-  digitalWrite(pin, HIGH);
-  delay(250);
-  digitalWrite(pin, LOW);
-
-  Serial.println("Done");
-
-  return 0;
-}
-
-int executeCommand(Command command) {
-  switch (command) {
-    case CMD_STATUS:
-      return 0;  // Do nothing, just needs to respond to client
-      break;
-    case CMD_OPEN_FRONT:
-      return openGarageDoor(FRONT);
-      break;
-    case CMD_OPEN_REAR:
-      return openGarageDoor(REAR);
-      break;
-    case CMD_SHUTDOWN:
-      // Sleep for 21 years
-      ESP.deepSleep(999999999 * 999999999U, WAKE_NO_RFCAL);
-      break;
-    default:
-      return INVALID_COMMAND;
-      break;
-  }
-}
-
-uint8_t* genHash(unsigned long epochTime) {
-  Sha256.initHmac((uint8_t*)HASH_KEY, sizeof(HASH_KEY) - 1);
-  Sha256.print(epochTime);
-  return Sha256.resultHmac();
-}
-
-int parseMessage(uint8_t* msg, unsigned long epochTime, Command& cmd) {
-  for (int8_t i = -2; i <= 2; i++) {
-    uint8_t* hash = genHash(epochTime + i);
-    if (memcmp(msg, hash, HASH_LENGTH) == 0) {
-      Serial.println("Hash Match");
-      cmd = (Command)(*(msg + HASH_LENGTH));
-      return 0;
-    }
-  }
-  return INVALID_HASH;
-}
 
 //==============================================================================
 // setup()
@@ -257,4 +203,79 @@ void loop() {
     if (openLog.throttleRateExceeded) { Serial.print('X'); }
     lastStatus = millis();
   }
+}
+//______________________________________________________________________________
+
+int parseMessage(uint8_t* msg, unsigned long epochTime, Command& cmd) {
+  for (int8_t i = -2; i <= 2; i++) {
+    uint8_t* hash = generateHash(epochTime + i);
+    if (memcmp(msg, hash, HASH_LENGTH) == 0) {
+      Serial.println("Hash Match");
+      cmd = (Command)(*(msg + HASH_LENGTH));
+      return 0;
+    }
+  }
+  return INVALID_HASH;
+}
+
+uint8_t* generateHash(unsigned long epochTime) {
+  Sha256.initHmac((uint8_t*)HASH_KEY, sizeof(HASH_KEY) - 1);
+  Sha256.print(epochTime);
+  return Sha256.resultHmac();
+}
+
+int executeCommand(Command command) {
+  switch (command) {
+    case CMD_STATUS:
+      return 0;  // Do nothing, just needs to respond to client
+      break;
+    case CMD_OPEN_FRONT:
+      return openGarageDoor(FRONT);
+      break;
+    case CMD_OPEN_REAR:
+      return openGarageDoor(REAR);
+      break;
+    case CMD_SHUTDOWN:
+      // Sleep for 21 years
+      ESP.deepSleep(999999999 * 999999999U, WAKE_NO_RFCAL);
+      break;
+    default:
+      return INVALID_COMMAND;
+      break;
+  }
+}
+
+int openGarageDoor(GarageDoorIndex doorIndex) {
+  openLog.open();
+  if (openLog.checkThrottleRateExceeded()) {
+    return THROTTLE_RATE_EXCEEDED;
+  }
+
+  Serial.printf("Opening Garage Door: %i...", doorIndex);
+
+  uint8_t pin;
+  switch (doorIndex) {
+    case FRONT:
+      pin = FRONT_DOOR_PIN;
+      break;
+    case REAR:
+      pin = REAR_DOOR_PIN;
+      break;
+  }
+
+  digitalWrite(pin, HIGH);
+  delay(250);
+  digitalWrite(pin, LOW);
+
+  Serial.println("Done");
+
+  return 0;
+}
+
+void printHash(uint8_t* hash) {
+  for (size_t i = 0; i < 32; i++) {
+    Serial.print("0123456789abcdef"[hash[i] >> 4]);
+    Serial.print("0123456789abcdef"[hash[i] & 0xf]);
+  }
+  Serial.println();
 }
