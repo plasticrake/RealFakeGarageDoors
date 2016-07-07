@@ -1,4 +1,5 @@
 # RealFakeGarageDoors
+[![Build Status](https://travis-ci.org/plasticrake/RealFakeGarageDoors.svg?branch=master)](https://travis-ci.org/plasticrake/RealFakeGarageDoors)
 
 Garage Door Opener for ESP8266.
 
