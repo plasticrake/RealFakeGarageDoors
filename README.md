@@ -4,11 +4,9 @@
 Garage Door Opener for ESP8266.
 
 This is the hardware portion of my Real Fake Garage Doors project.
-
-I took apart a [Linear Multi-Code 412001 Remote](https://www.amazon.com/dp/B000F5KEP6/)  and attached an ESP8266 that triggers it to open the garage door. Since the ESP8266 doesn't have an easy way to encrypt traffic as a server I'm using SHA256-HMAC to send authenticated commands to the ESP8266.
-
 The client is the [homebridge-real-fake-garage-doors](https://github.com/plasticrake/homebridge-real-fake-garage-doors) plugin for [Homebridge](https://github.com/nfarina/homebridge).
 
+I opened a [Linear Multi-Code 412001](https://www.amazon.com/dp/B000F5KEP6/) garage door remote and attached an ESP8266 to trigger it to open the garage door. Since the ESP8266 doesn't have an easy way to encrypt traffic as a server I'm using SHA256-HMAC to send authenticated commands to the ESP8266.
 
 ## Configuration
 
