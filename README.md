@@ -19,6 +19,8 @@ The client is the [homebridge-real-fake-garage-doors](https://github.com/plastic
 ## Schematics
 
 ![Schematics](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/schematics.png "Schematics")
+![Circuit Top](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/circuit-top.png "Circuit Top")
+![Circuit Bottom](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/circuit-bottom.png "Circuit Bottom")
 
 ### Parts
 * ESP8266
