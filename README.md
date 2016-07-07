@@ -13,11 +13,11 @@ The client is the [homebridge-real-fake-garage-doors](https://github.com/plastic
 
 `HASH_KEY`: SHA256-HMAC key that should match the key from homebridge-real-fake-garage-doors.
 
-`MAX_OPEN_COUNT_PER_MINUTE` / `MAX_OPEN_COUNT_PER_HOUR` / `MAX_OPEN_COUNT_PER_DAY`: If any of these thresholds are exceeded then the device will no longer fulfill any open commands until the device is reset. This is a safeguard against any errant clients continuously sending opening commands.
+`MAX_OPEN_COUNT_PER_MINUTE` / `MAX_OPEN_COUNT_PER_HOUR` / `MAX_OPEN_COUNT_PER_DAY`: If any of these thresholds are exceeded then the device will no longer fulfill any open commands until the device is reset. This is a safeguard against any errant clients continuously sending open commands.
 
 ## Schematics
 
-![Schematics](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/schematics/schematics.png "Schematics")
+![Schematics](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/schematics.png "Schematics")
 
 ### Parts
 * ESP8266
