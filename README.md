@@ -16,11 +16,11 @@ The client is the [homebridge-real-fake-garage-doors](https://github.com/plastic
 
 `MAX_OPEN_COUNT_PER_MINUTE` / `MAX_OPEN_COUNT_PER_HOUR` / `MAX_OPEN_COUNT_PER_DAY`: If any of these thresholds are exceeded then the device will no longer fulfill any open commands until the device is reset. This is a safeguard against any errant clients continuously sending open commands.
 
-## Schematics
+## Hardware
 
 ![Schematics](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/schematics.png "Schematics")
-![Circuit Top](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/circuit-top.png "Circuit Top")
-![Circuit Bottom](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/circuit-bottom.png "Circuit Bottom")
+![Circuit Top](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/circuit-top.jpg "Circuit Top")
+![Circuit Bottom](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/circuit-bottom.jpg "Circuit Bottom")
 
 ### Parts
 * ESP8266
