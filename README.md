@@ -16,15 +16,16 @@ I opened a [Linear Multi-Code 412001](https://www.amazon.com/dp/B000F5KEP6/) gar
 
 ## Hardware
 
-![Schematics](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/schematics.png "Schematics")
-![Circuit Top](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/circuit-top.jpg "Circuit Top")
-![Circuit Bottom](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/circuit-bottom.jpg "Circuit Bottom")
+![Schematic](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/schematic.png "Schematic")
+![Breadboard](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/breadboard.jpg "Breadboard")
 
 ### Parts
 * ESP8266
 * [Linear Multi-Code 412001 Remote](https://www.amazon.com/dp/B000F5KEP6/)
 * NPN Transistor [PN2222](https://www.adafruit.com/product/756) x2
-* 10k Resistor x2
+* P-Channel MOSFET [BS250](http://www.jameco.com/z/BS250-Major-Brands-Transistor-BS250-TO-92-Transistor-P-Channel-MOSFET-45-Volt_256057.html) x2
+* 10k Resistor x4
+* 680 Resistor x2
 
 ## Thanks
 SHA256-HMAC implementation from https://github.com/spaniakos/Cryptosuite which is a fork of https://github.com/Cathedrow/Cryptosuite
