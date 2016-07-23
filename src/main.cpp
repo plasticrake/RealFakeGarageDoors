@@ -212,7 +212,8 @@ void loop() {
 //______________________________________________________________________________
 
 int parseMessage(uint8_t* msg, unsigned long epochTime, Command& cmd) {
-  for (int8_t i = -2; i <= 2; i++) {
+  // Look 5 seconds back and 2 seconds forward
+  for (int8_t i = -5; i <= 2; i++) {
     uint8_t* hash = generateHash(epochTime + i);
     if (memcmp(msg, hash, HASH_LENGTH) == 0) {
       Serial.println("Hash Match");
