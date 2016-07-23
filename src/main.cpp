@@ -158,6 +158,7 @@ void setup() {
   timeClient.begin();
 
   server.begin();
+  server.setNoDelay(true);
   Serial.printf("Port: %i\n", PORT);
 }
 
@@ -168,9 +169,13 @@ void loop() {
   timeClient.update();
 
   if (WiFiClient client = server.available()) {
+    client.setNoDelay(true);
+    Serial.print("Client Connected ");
     while (client.connected()) {
+      Serial.print('-');
+      yield();
       if (client.available() > 0) {
-        Serial.println("Client Connected... Receiving Data");
+        Serial.println("Receiving Data");
 
         uint8_t response;
         unsigned long epochTime = timeClient.getEpochTime();
