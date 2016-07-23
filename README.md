@@ -17,7 +17,7 @@ I opened a [Linear Multi-Code 412001](https://www.amazon.com/dp/B000F5KEP6/) gar
 ## Hardware
 
 ![Schematic](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/schematic.png "Schematic")
-![Breadboard](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/breadboard.jpg "Breadboard")
+![Breadboard](https://github.com/plasticrake/RealFakeGarageDoors/raw/master/hardware/breadboard.png "Breadboard")
 
 ### Parts
 * ESP8266
